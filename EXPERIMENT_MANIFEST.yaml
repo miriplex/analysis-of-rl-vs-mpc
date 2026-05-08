@@ -1,0 +1,966 @@
+manifest:
+  version: 1
+  frozen_on: 2026-04-04
+  project:
+    title: "Analysis of Reinforcement Learning and Model Predictive Control"
+    repo_root: "/Users/leonidsokolov/PycharmProjects/3rd_year_project_sem2/control_bench"
+    purpose:
+      - "Compare MPC, RL (PID-features), and RL (MLP rich) on simple and difficult control problems."
+      - "Assess nominal performance, robustness to disturbance and plant mismatch, and runtime computational burden."
+      - "Provide a reproducible benchmark definition that can support dissertation writing and future tuning studies."
+    notes:
+      - "This manifest is a frozen reference for the current experiment scope."
+      - "For first-order MLP controller definitions, this manifest is the live source of truth used by the code."
+
+shared:
+  simulation:
+    closed_loop_engine: "control_bench.core.sim.simulate_closed_loop"
+    scenario_engine: "control_bench.core.scenario_impl.BasicScenario"
+    bounds_policy_default: "off"
+    random_seed_default: 0
+  controllers:
+    first_order_set:
+      - "MPC"
+      - "RL (PID-features)"
+      - "RL (MLP rich)"
+    second_order_set:
+      - "MPC"
+      - "RL (PID-features)"
+      - "RL (MLP rich)"
+    pendulum_set:
+      - "MPC"
+      - "RL (PID-features)"
+      - "RL (MLP rich)"
+  runtime_metrics:
+    measured_on: "controller.step(...) only"
+    excludes:
+      - "plant propagation"
+      - "plotting"
+      - "file I/O"
+      - "animation"
+    reported:
+      - "mean_step_ms"
+      - "median_step_ms"
+      - "p95_ms"
+      - "max_step_ms"
+      - "util_percent"
+    utilization_definition: "100 * p95_step_ms / dt"
+
+first_order:
+  status: "primary mature benchmark track"
+  family:
+    dt: 0.1
+    gain_k: 1.0
+    stable_p: -1.0
+    unstable_p: 1.0
+    lhp_zero: -2.0
+    rhp_zero: 2.0
+    u_min: null
+    u_max: null
+  plants:
+    ordered_ids:
+      - "stable__no_zero"
+      - "stable__lhp_zero"
+      - "stable__rhp_zero"
+      - "integrator__no_zero"
+      - "integrator__lhp_zero"
+      - "integrator__rhp_zero"
+      - "unstable__no_zero"
+      - "unstable__lhp_zero"
+      - "unstable__rhp_zero"
+    tradeoff_focus_plant: "unstable__rhp_zero"
+  cost:
+    qy: 1.0
+    ru: 2.0
+    qu: 0.0
+  evaluation:
+    mlp_variant_study:
+      script: "experiments/first_order/compare_first_order_mlp_variants.py"
+      t_final_seconds: 20.0
+      reference_step: -2.0
+      scenarios:
+        nominal:
+          description: "nominal plant, no measurement noise, no disturbance"
+        disturbed:
+          sigma_y: 0.02
+          sigma_du: 0.02
+          disturbance_step_time_seconds: 5.0
+          disturbance_step_magnitude: 0.10
+        hidden_pole_mismatch:
+          hidden_pole: 10.0
+          real_plant_factor: "10 / (s + 10)"
+    robust_vs_baseline:
+      script: "experiments/first_order/compare_first_order_mlp_variants_robust_vs_baseline.py"
+      t_final_seconds: 20.0
+      reference_step: -2.0
+      robust_results_namespace: "first_order_robust"
+      output_metrics_namespace: "first_order_robust_vs_baseline"
+      output_figures_namespace: "first_order_robust_vs_baseline"
+      scenarios:
+        nominal:
+          description: "nominal plant, no measurement noise, no disturbance"
+        disturbed:
+          sigma_y: 0.02
+          sigma_du: 0.02
+          disturbance_step_time_seconds: 5.0
+          disturbance_step_magnitude: 0.10
+        hidden_pole_mismatch:
+          hidden_pole: 10.0
+          real_plant_factor: "10 / (s + 10)"
+    nominal_compare:
+      script: "experiments/first_order/compare_first_order_9plants.py"
+      t_final_seconds: 10.0
+      reference_step: -2.0
+      mpc:
+        N: 50
+        pgd_iters: 80
+      rl_runtime_architecture:
+        rich_hidden_layers: [16, 16]
+        rich_activation: "tanh"
+    disturbed_compare:
+      script: "experiments/first_order/compare_first_order_9plants_disturbed.py"
+      t_final_seconds: 10.0
+      reference_step: -2.0
+      sigma_y: 0.02
+      sigma_du: 0.02
+      disturbance_step_time_seconds: 5.0
+      disturbance_step_magnitude: 0.10
+      mpc:
+        N: 50
+        pgd_iters: 80
+    hidden_pole_mismatch_compare:
+      script: "experiments/first_order/compare_first_order_9plants_secret_pole_mismatch.py"
+      t_final_seconds: 10.0
+      reference_step: -2.0
+      hidden_pole: 10.0
+      real_plant_factor: "10 / (s + 10)"
+      mpc_uses_nominal_model: true
+      mpc:
+        N: 50
+        pgd_iters: 80
+    gain_mismatch_compare:
+      script: "experiments/first_order/compare_first_order_9plants_gain_mismatch.py"
+      t_final_seconds: 20.0
+      reference_step: -2.0
+      real_plant_gain_scale: 2.0
+      mpc_uses_nominal_model: true
+      mpc:
+        N: 50
+        pgd_iters: 80
+    focused_scenario_compare:
+      script: "experiments/first_order/compare_first_order_unstable_rhp_zero_scenarios.py"
+      plant_id: "unstable__rhp_zero"
+      t_final_seconds: 20.0
+      scenarios:
+        - "nominal"
+        - "disturbed"
+        - "hidden_pole_mismatch"
+    hidden_pole_stress_test:
+      script: "experiments/first_order/robustness_tests/hidden_pole_stress_test.py"
+      t_final_seconds: 20.0
+      reference_step: -2.0
+      hidden_pole: 100.0
+      max_hidden_order: 200
+      hidden_pole_factor_template: "(a / (s + a))^n"
+      output_metrics_namespace: "hidden_pole_stress"
+      output_figures_namespace: "hidden_pole_stress"
+    disturbance_stress_test:
+      script: "experiments/first_order/robustness_tests/disturbance_stress_test.py"
+      t_final_seconds: 20.0
+      reference_step: -2.0
+      base_measurement_noise_std: 0.02
+      base_disturbance_noise_std: 0.02
+      disturbance_step_time_seconds: 5.0
+      base_disturbance_step_magnitude: 0.10
+      disturbance_scale_schedule:
+        - { start: 0.0, stop: 2.0, step: 0.1 }
+        - { start: 3.0, stop: 100.0, step: 1.0 }
+      output_metrics_namespace: "disturbance_stress"
+      output_figures_namespace: "disturbance_stress"
+    measurement_noise_stress_test:
+      script: "experiments/first_order/robustness_tests/measurement_noise_stress_test.py"
+      t_final_seconds: 20.0
+      reference_step: -2.0
+      base_measurement_noise_std: 0.02
+      stress_scale_schedule:
+        - { start: 0.0, stop: 2.0, step: 0.1 }
+        - { start: 3.0, stop: 100.0, step: 1.0 }
+      output_metrics_namespace: "measurement_noise_stress"
+      output_figures_namespace: "measurement_noise_stress"
+    input_noise_stress_test:
+      script: "experiments/first_order/robustness_tests/input_noise_stress_test.py"
+      t_final_seconds: 20.0
+      reference_step: -2.0
+      base_disturbance_noise_std: 0.02
+      stress_scale_schedule:
+        - { start: 0.0, stop: 2.0, step: 0.1 }
+        - { start: 3.0, stop: 100.0, step: 1.0 }
+      output_metrics_namespace: "input_noise_stress"
+      output_figures_namespace: "input_noise_stress"
+    step_disturbance_stress_test:
+      script: "experiments/first_order/robustness_tests/step_disturbance_stress_test.py"
+      t_final_seconds: 20.0
+      reference_step: -2.0
+      disturbance_step_time_seconds: 5.0
+      base_disturbance_step_magnitude: 0.10
+      stress_scale_schedule:
+        - { start: 0.0, stop: 2.0, step: 0.1 }
+        - { start: 3.0, stop: 100.0, step: 1.0 }
+      output_metrics_namespace: "step_disturbance_stress"
+      output_figures_namespace: "step_disturbance_stress"
+  rl_training:
+    script: "experiments/train_rl_first_order_numpy.py"
+    horizon_seconds: 20.0
+    horizon_steps: 200
+    early_stopping:
+      eval_every_updates: 100
+      patience_evals: 10
+      relative_improvement_threshold: 0.01
+      best_validation_loss_threshold: 1.0
+    validation_suite_nominal:
+      tracking_refs: [-1.5, -0.5, 0.5, 1.5]
+      regulation_initial_states: [0.0, 0.4]
+      disturbance_cases:
+        - { step_start_fraction: 0.30, amplitude: 0.15 }
+        - { step_start_fraction: 0.60, amplitude: -0.15 }
+    pid_features:
+      training_variant: "nominal baseline"
+      seeds: 1
+      steps_cap: 100000
+      learning_rate: 0.003
+      grad_clip_norm: null
+      rollout_mix:
+        tracking: 0.50
+        regulation: 0.25
+        disturbance_rejection: 0.25
+      runtime_features:
+        - "error e_k"
+        - "integral error ie_k"
+        - "derivative error de_k"
+    rich_mlp:
+      training_variant: "robustified current default"
+      seeds: 5
+      steps_cap: 100000
+      learning_rate: 0.0005
+      hidden_layers: [16, 16]
+      activation: "tanh"
+      grad_clip_norm: 1.0
+      rollout_mix:
+        tracking: 0.45
+        regulation: 0.20
+        disturbance_rejection: 0.35
+      training_noise:
+        measurement_noise_std: 0.01
+        disturbance_noise_std: 0.01
+      domain_randomization:
+        gain_relative_range: 0.05
+        pole_relative_range: 0.05
+        zero_relative_range: 0.05
+        exact_hidden_pole_mismatch_seen_in_training: false
+      hidden_pole_randomization:
+        enabled: false
+        location_low: 8.0
+        location_high: 20.0
+        order: 1
+      robust_validation:
+        measurement_noise_std: 0.01
+        disturbance_noise_std: 0.02
+        hidden_pole_cases: []
+      robust_seed_selection:
+        strategy: "robust mixed validation score with lag term and nominal gate"
+        nominal_gate_reg_tail_max: 1.0
+        nominal_gate_track_mean_max: 1.0
+        weights:
+          track_mean: 0.25
+          reg_mean: 0.15
+          dist_mean: 0.20
+          dist_tail_mean: 0.10
+          lag_mean: 0.20
+          lag_tail_mean: 0.10
+      runtime_features:
+        - "reference r_k"
+        - "y_k"
+        - "y_{k-1}"
+        - "y_{k-2}"
+        - "e_k"
+        - "e_{k-1}"
+        - "e_{k-2}"
+        - "ie_k"
+        - "de_k"
+        - "u_{k-1}"
+        - "u_{k-2}"
+    controller_registry:
+      default_mlp_variant_id: "mlp_rich_default"
+      mlp_feature_sets:
+        rich11:
+          input_dim: 11
+          runtime_features:
+            - "reference r_k"
+            - "y_k"
+            - "y_{k-1}"
+            - "y_{k-2}"
+            - "e_k"
+            - "e_{k-1}"
+            - "e_{k-2}"
+            - "ie_k"
+            - "de_k"
+            - "u_{k-1}"
+            - "u_{k-2}"
+        compact6:
+          input_dim: 6
+          runtime_features:
+            - "reference r_k"
+            - "y_k"
+            - "e_k"
+            - "ie_k"
+            - "de_k"
+            - "u_{k-1}"
+      mlp_training_defaults:
+        sampler_kind: "current_robust"
+        validation_sampler_kind: "current_robust"
+        rollout_mix:
+          tracking: 0.45
+          regulation: 0.20
+          disturbance_rejection: 0.35
+        training_noise:
+          measurement_noise_std: 0.01
+          disturbance_noise_std: 0.01
+        domain_randomization:
+          gain_relative_range: 0.05
+          pole_relative_range: 0.05
+          zero_relative_range: 0.05
+          exact_hidden_pole_mismatch_seen_in_training: false
+        hidden_pole_randomization:
+          enabled: false
+          location_low: 8.0
+          location_high: 20.0
+          order: 1
+        robust_validation:
+          measurement_noise_std: 0.01
+          disturbance_noise_std: 0.02
+          hidden_pole_cases: []
+        robust_seed_selection:
+          strategy: "robust mixed validation score with lag term and nominal gate"
+          nominal_gate_reg_tail_max: 1.0
+          nominal_gate_track_mean_max: 1.0
+          weights:
+            track_mean: 0.25
+            reg_mean: 0.15
+            dist_mean: 0.20
+            dist_tail_mean: 0.10
+            lag_mean: 0.20
+            lag_tail_mean: 0.10
+      mlp_variants:
+        - id: "mlp_rich_default"
+          label: "16_16 (rich11)"
+          feature_set: "rich11"
+          hidden_layers: [16, 16]
+          activation: "tanh"
+          seeds: 5
+          steps_cap: 100000
+          learning_rate: 0.0005
+          grad_clip_norm: 1.0
+          canonical_filename_prefix: "rl_rich"
+          seed_filename_prefix: "rl_rich"
+          training_variant: "robust"
+          cost_overrides:
+            ru: 2.0
+          rollout_mix:
+            tracking: 0.45
+            regulation: 0.20
+            disturbance_rejection: 0.35
+          training_noise:
+            measurement_noise_std: 0.01
+            disturbance_noise_std: 0.01
+          domain_randomization:
+            gain_relative_range: 0.05
+            pole_relative_range: 0.05
+            zero_relative_range: 0.05
+            exact_hidden_pole_mismatch_seen_in_training: false
+          robust_validation:
+            measurement_noise_std: 0.01
+            disturbance_noise_std: 0.02
+          robust_seed_selection:
+            strategy: "robust mixed validation score with lag term and nominal gate"
+            weights:
+              track_mean: 0.35
+              reg_mean: 0.15
+              dist_mean: 0.35
+              dist_tail_mean: 0.15
+        - id: "mlp_compact6"
+          label: "16_16 (compact6)"
+          feature_set: "compact6"
+          hidden_layers: [16, 16]
+          activation: "tanh"
+          seeds: 5
+          steps_cap: 100000
+          learning_rate: 0.0005
+          grad_clip_norm: 1.0
+          canonical_filename_prefix: "rl_mlp_compact6"
+          seed_filename_prefix: "rl_mlp_compact6"
+          training_variant: "robust"
+          cost_overrides:
+            ru: 2.0
+          rollout_mix:
+            tracking: 0.45
+            regulation: 0.20
+            disturbance_rejection: 0.35
+          training_noise:
+            measurement_noise_std: 0.01
+            disturbance_noise_std: 0.01
+          domain_randomization:
+            gain_relative_range: 0.05
+            pole_relative_range: 0.05
+            zero_relative_range: 0.05
+            exact_hidden_pole_mismatch_seen_in_training: false
+          robust_validation:
+            measurement_noise_std: 0.01
+            disturbance_noise_std: 0.02
+          robust_seed_selection:
+            strategy: "robust mixed validation score with lag term and nominal gate"
+            weights:
+              track_mean: 0.35
+              reg_mean: 0.15
+              dist_mean: 0.35
+              dist_tail_mean: 0.15
+        - id: "mlp_rich_wide"
+          label: "32_32 (rich11)"
+          feature_set: "rich11"
+          hidden_layers: [32, 32]
+          activation: "tanh"
+          seeds: 5
+          steps_cap: 100000
+          learning_rate: 0.0005
+          grad_clip_norm: 1.0
+          canonical_filename_prefix: "rl_mlp_rich_wide"
+          seed_filename_prefix: "rl_mlp_rich_wide"
+          training_variant: "robust"
+          cost_overrides:
+            ru: 2.0
+          rollout_mix:
+            tracking: 0.45
+            regulation: 0.20
+            disturbance_rejection: 0.35
+          training_noise:
+            measurement_noise_std: 0.01
+            disturbance_noise_std: 0.01
+          domain_randomization:
+            gain_relative_range: 0.05
+            pole_relative_range: 0.05
+            zero_relative_range: 0.05
+            exact_hidden_pole_mismatch_seen_in_training: false
+          robust_validation:
+            measurement_noise_std: 0.01
+            disturbance_noise_std: 0.02
+          robust_seed_selection:
+            strategy: "robust mixed validation score with lag term and nominal gate"
+            weights:
+              track_mean: 0.35
+              reg_mean: 0.15
+              dist_mean: 0.35
+              dist_tail_mean: 0.15
+        - id: "mlp_compact6_wide"
+          label: "32_32 (compact6)"
+          feature_set: "compact6"
+          hidden_layers: [32, 32]
+          activation: "tanh"
+          seeds: 5
+          steps_cap: 100000
+          learning_rate: 0.0005
+          grad_clip_norm: 1.0
+          canonical_filename_prefix: "rl_mlp_compact6_wide"
+          seed_filename_prefix: "rl_mlp_compact6_wide"
+          training_variant: "robust"
+          cost_overrides:
+            ru: 2.0
+          rollout_mix:
+            tracking: 0.45
+            regulation: 0.20
+            disturbance_rejection: 0.35
+          training_noise:
+            measurement_noise_std: 0.01
+            disturbance_noise_std: 0.01
+          domain_randomization:
+            gain_relative_range: 0.05
+            pole_relative_range: 0.05
+            zero_relative_range: 0.05
+            exact_hidden_pole_mismatch_seen_in_training: false
+          robust_validation:
+            measurement_noise_std: 0.01
+            disturbance_noise_std: 0.02
+          robust_seed_selection:
+            strategy: "robust mixed validation score with lag term and nominal gate"
+            weights:
+              track_mean: 0.35
+              reg_mean: 0.15
+              dist_mean: 0.35
+              dist_tail_mean: 0.15
+        - id: "mlp_max"
+          label: "16_16_16 (rich11)"
+          feature_set: "rich11"
+          hidden_layers: [16, 16, 16]
+          activation: "tanh"
+          seeds: 5
+          steps_cap: 100000
+          learning_rate: 0.0005
+          grad_clip_norm: 1.0
+          canonical_filename_prefix: "rl_mlp_max"
+          seed_filename_prefix: "rl_mlp_max"
+          training_variant: "robust"
+          cost_overrides:
+            ru: 2.0
+          rollout_mix:
+            tracking: 0.45
+            regulation: 0.20
+            disturbance_rejection: 0.35
+          training_noise:
+            measurement_noise_std: 0.01
+            disturbance_noise_std: 0.01
+          domain_randomization:
+            gain_relative_range: 0.05
+            pole_relative_range: 0.05
+            zero_relative_range: 0.05
+            exact_hidden_pole_mismatch_seen_in_training: false
+          robust_validation:
+            measurement_noise_std: 0.01
+            disturbance_noise_std: 0.02
+          robust_seed_selection:
+            strategy: "robust mixed validation score with lag term and nominal gate"
+            weights:
+              track_mean: 0.35
+              reg_mean: 0.15
+              dist_mean: 0.35
+              dist_tail_mean: 0.15
+        - id: "mlp_compact6_max"
+          label: "16_16_16 (compact6)"
+          feature_set: "compact6"
+          hidden_layers: [16, 16, 16]
+          activation: "tanh"
+          seeds: 5
+          steps_cap: 100000
+          learning_rate: 0.0005
+          grad_clip_norm: 1.0
+          canonical_filename_prefix: "rl_mlp_compact6_max"
+          seed_filename_prefix: "rl_mlp_compact6_max"
+          training_variant: "robust"
+          cost_overrides:
+            ru: 2.0
+          rollout_mix:
+            tracking: 0.45
+            regulation: 0.20
+            disturbance_rejection: 0.35
+          training_noise:
+            measurement_noise_std: 0.01
+            disturbance_noise_std: 0.01
+          domain_randomization:
+            gain_relative_range: 0.05
+            pole_relative_range: 0.05
+            zero_relative_range: 0.05
+            exact_hidden_pole_mismatch_seen_in_training: false
+          robust_validation:
+            measurement_noise_std: 0.01
+            disturbance_noise_std: 0.02
+          robust_seed_selection:
+            strategy: "robust mixed validation score with lag term and nominal gate"
+            weights:
+              track_mean: 0.35
+              reg_mean: 0.15
+              dist_mean: 0.35
+              dist_tail_mean: 0.15
+        - id: "mlp_rich_xl"
+          label: "32_32_32 (rich11)"
+          feature_set: "rich11"
+          hidden_layers: [32, 32, 32]
+          activation: "tanh"
+          seeds: 5
+          steps_cap: 100000
+          learning_rate: 0.0005
+          grad_clip_norm: 1.0
+          canonical_filename_prefix: "rl_mlp_rich_xl"
+          seed_filename_prefix: "rl_mlp_rich_xl"
+          training_variant: "robust"
+          cost_overrides:
+            ru: 2.0
+          rollout_mix:
+            tracking: 0.45
+            regulation: 0.20
+            disturbance_rejection: 0.35
+          training_noise:
+            measurement_noise_std: 0.01
+            disturbance_noise_std: 0.01
+          domain_randomization:
+            gain_relative_range: 0.05
+            pole_relative_range: 0.05
+            zero_relative_range: 0.05
+            exact_hidden_pole_mismatch_seen_in_training: false
+          robust_validation:
+            measurement_noise_std: 0.01
+            disturbance_noise_std: 0.02
+          robust_seed_selection:
+            strategy: "robust mixed validation score with lag term and nominal gate"
+            weights:
+              track_mean: 0.35
+              reg_mean: 0.15
+              dist_mean: 0.35
+              dist_tail_mean: 0.15
+        - id: "mlp_compact6_xl"
+          label: "32_32_32 (compact6)"
+          feature_set: "compact6"
+          hidden_layers: [32, 32, 32]
+          activation: "tanh"
+          seeds: 5
+          steps_cap: 100000
+          learning_rate: 0.0005
+          grad_clip_norm: 1.0
+          canonical_filename_prefix: "rl_mlp_compact6_xl"
+          seed_filename_prefix: "rl_mlp_compact6_xl"
+          training_variant: "robust"
+          cost_overrides:
+            ru: 2.0
+          rollout_mix:
+            tracking: 0.45
+            regulation: 0.20
+            disturbance_rejection: 0.35
+          training_noise:
+            measurement_noise_std: 0.01
+            disturbance_noise_std: 0.01
+          domain_randomization:
+            gain_relative_range: 0.05
+            pole_relative_range: 0.05
+            zero_relative_range: 0.05
+            exact_hidden_pole_mismatch_seen_in_training: false
+          robust_validation:
+            measurement_noise_std: 0.01
+            disturbance_noise_std: 0.02
+          robust_seed_selection:
+            strategy: "robust mixed validation score with lag term and nominal gate"
+            weights:
+              track_mean: 0.35
+              reg_mean: 0.15
+              dist_mean: 0.35
+              dist_tail_mean: 0.15
+    universal_robust_track:
+      script: "experiments/first_order/train_first_order_manifest_controllers_robust.py"
+      results_namespace: "first_order_robust"
+      figures_namespace: "first_order_robust_training"
+      training_scope: "manifest-defined first-order MLP variants only"
+      rollout_mix:
+        tracking: 0.35
+        regulation: 0.20
+        disturbance_rejection: 0.45
+      training_noise:
+        measurement_noise_std_range: [0.01, 0.02]
+        disturbance_noise_std_range: [0.01, 0.02]
+      disturbance_family:
+        step_time_seconds_range: [2.0, 8.0]
+        step_magnitude_abs_range: [0.03, 0.20]
+        both_signs: true
+      domain_randomization:
+        gain_relative_range: 0.02
+        pole_relative_range: 0.02
+        zero_relative_range: 0.0
+        exact_hidden_pole_mismatch_seen_in_training: false
+      validation:
+        measurement_noise_std: 0.015
+        disturbance_noise_std: 0.015
+        disturbance_cases:
+          - { step_time_seconds: 2.5, amplitude: 0.08 }
+          - { step_time_seconds: 5.0, amplitude: -0.12 }
+          - { step_time_seconds: 7.5, amplitude: 0.15 }
+  robustness_benchmark:
+    script: "experiments/first_order/benchmark_first_order_robustness_metrics.py"
+    t_final_seconds: 10.0
+    reference_step: -2.0
+    scenarios:
+      nominal:
+        description: "nominal plant, no measurement noise, no disturbance"
+      disturbed:
+        sigma_y: 0.02
+        sigma_du: 0.02
+        disturbance_step_time_seconds: 5.0
+        disturbance_step_magnitude: 0.10
+      hidden_pole_mismatch:
+        hidden_pole: 10.0
+        real_plant_factor: "10 / (s + 10)"
+    metrics:
+      rank:
+        short_name: "rank"
+        description: "average within-plant/scenario rank across cost, peak, tail RMS, tail growth, max |u|, and failure; lower is better"
+      mean_cost:
+        short_name: "cost"
+        description: "mean rollout stage cost under the same qy/ru/qu objective"
+      peak_error:
+        short_name: "peak"
+        description: "maximum absolute tracking error"
+      tail_rms_error:
+        short_name: "tail_rms"
+        description: "RMS tracking error over the last 25 percent of the rollout"
+      tail_growth_ratio:
+        short_name: "tail_g"
+        description: "RMS(last 10 percent) / RMS(previous 10 percent)"
+      max_abs_u:
+        short_name: "max_u"
+        description: "maximum absolute control magnitude"
+      failure:
+        short_name: "fails"
+        description: "run flagged as failed by threshold rule"
+    failure_rule:
+      peak_error_abs_threshold: 10.0
+      max_abs_u_threshold: 50.0
+      tail_rms_floor: 0.20
+      tail_growth_ratio_threshold: 1.20
+    runtime_benchmark:
+      warmup_repeats: 3
+      measure_repeats: 12
+      mpc_sweep_warmup_repeats: 1
+      mpc_sweep_measure_repeats: 4
+      tradeoff_focus_plant: "unstable__rhp_zero"
+      tradeoff_mpc_horizon_sweep:
+        N_min: 1
+        N_max: 50
+        viable_region_start_for_zoomed_plot: 15
+
+second_order:
+  status: "secondary benchmark track"
+  family:
+    dt: 0.02
+    gain_k: 1.0
+    wn: 1.0
+    zeta_underdamped: 0.2
+    zeta_critically_damped: 1.0
+    zeta_overdamped: 2.0
+    sigma_unstable: 0.3
+    a: 0.5
+    b: 1.0
+    lhp_zero: 2.0
+    rhp_zero: 2.0
+    u_min: null
+    u_max: null
+  suite_ids:
+    - "stable_ud"
+    - "stable_cd"
+    - "stable_od"
+    - "unstable_saddle"
+    - "unstable_osc"
+    - "double_integrator"
+    - "int_plus_pole"
+    - "stable_ud_lhp_zero"
+    - "stable_ud_rhp_zero"
+    - "boss_unstable_osc_rhp_zero"
+  single_custom_plant:
+    plant_id: "lightly_damped_custom"
+    dt: 0.05
+    numerator: [0.0, 1.0]
+    denominator: [1.0, 0.5, 1.0]
+    u_min: null
+    u_max: null
+  comparison_scope:
+    script: "experiments/second_order/compare_second_order_single_plant.py"
+    plant_ids:
+      - "lightly_damped_custom"
+      - "boss_unstable_osc_rhp_zero"
+    t_final_seconds: 20.0
+    reference_step: -2.0
+    open_loop_trace_included: true
+    mpc:
+      N: 50
+      qy: 1.0
+      ru: 1.0
+      qu: 0.01
+      pgd_iters: 80
+  rl_training:
+    script: "experiments/train_rl_second_order_single_plant_numpy.py"
+    compared_plant_ids:
+      - "lightly_damped_custom"
+      - "boss_unstable_osc_rhp_zero"
+    horizon_seconds:
+      lightly_damped_custom: 20.0
+      boss_unstable_osc_rhp_zero: 20.0
+    horizon_steps:
+      lightly_damped_custom: 400
+      boss_unstable_osc_rhp_zero: 1000
+    cost:
+      qy: 1.0
+      ru: 1.0
+      qu: 0.01
+    early_stopping:
+      eval_every_updates: 100
+      patience_evals: 10
+      relative_improvement_threshold: 0.01
+      best_validation_loss_threshold: 1.0
+    pid_features:
+      seeds: 1
+      steps_cap: 100000
+      learning_rate: 0.003
+      grad_clip_norm: null
+    rich_mlp:
+      seeds: 5
+      steps_cap: 100000
+      learning_rate: 0.0005
+      hidden_layers: [16, 16]
+      activation: "tanh"
+      grad_clip_norm: 1.0
+    rollout_mix:
+      tracking: 0.50
+      regulation: 0.25
+      disturbance_rejection: 0.25
+    validation_suite:
+      tracking_refs: [-1.5, -0.5, 0.5, 1.5]
+      regulation_initial_states:
+        - [0.0, 0.0]
+        - [0.4, 0.0]
+        - [0.0, 0.4]
+      disturbance_cases:
+        - { step_start_fraction: 0.30, amplitude: 0.15 }
+        - { step_start_fraction: 0.60, amplitude: -0.15 }
+
+inverted_pendulum:
+  status: "exploratory implementation track"
+  linearized_model:
+    params:
+      dt: 0.02
+      cart_mass: 0.5
+      pole_mass: 4.0
+      cart_damping: 0.1
+      pole_length: 0.3
+      pole_inertia: 0.006
+      gravity: 9.8
+      u_min: null
+      u_max: null
+    state_definition:
+      - "cart_position x"
+      - "cart_velocity x_dot"
+      - "pole_angle theta"
+      - "pole_angular_velocity theta_dot"
+    angle_convention: "positive theta rotates the pendulum to the cart's left"
+  nonlinear_model:
+    params_match_linearized: true
+  rendering:
+    realtime: true
+    hold_final_frame: false
+    visual_pole_scale: 2.4
+    visual_bob_radius: 0.055
+  scenarios:
+    linear_open_loop:
+      script: "experiments/inverted_pendulum/open_loop_inverted_pendulum.py"
+      t_final_seconds: 8.0
+      x0: [0.0, 0.0, 0.0872664626, 0.0]
+      u_open_loop: 0.0
+      angle_stop_deg: 20.0
+    linear_mpc_nominal:
+      script: "experiments/inverted_pendulum/simulate_inverted_pendulum_mpc.py"
+      t_final_seconds: 8.0
+      x0: [0.0, 0.0, 0.0872664626, 0.0]
+      reference: [0.0, 0.0, 0.0, 0.0]
+      angle_stop_deg: 20.0
+      cart_stop: null
+      mpc:
+        N: 60
+        q_state_diag: [1.0, 0.1, 40.0, 4.0]
+        ru: 2.0
+        qu: 0.01
+        pgd_iters: 80
+    linear_mpc_wind:
+      script: "experiments/inverted_pendulum/simulate_inverted_pendulum_mpc_wind.py"
+      t_final_seconds: 8.0
+      x0: [0.0, 0.0, 0.0, 0.0]
+      reference: [0.0, 0.0, 0.0, 0.0]
+      angle_stop_deg: 20.0
+      cart_stop: null
+      wind:
+        start_seconds: 1.0
+        duration_seconds: 1.0
+        peak_force: 0.7
+    nonlinear_open_loop:
+      script: "experiments/inverted_pendulum/open_loop_nonlinear_inverted_pendulum.py"
+      t_final_seconds: 8.0
+      x0: [0.0, 0.0, 0.0872664626, 0.0]
+      u_open_loop: 0.0
+      angle_stop_deg: null
+    nonlinear_mpc_nominal:
+      script: "experiments/inverted_pendulum/simulate_nonlinear_inverted_pendulum_mpc.py"
+      t_final_seconds: 8.0
+      x0: [0.0, 0.0, 0.0872664626, 0.0]
+      reference: [0.0, 0.0, 0.0, 0.0]
+      angle_stop_deg: 90.0
+      cart_stop: null
+      controller_model: "upright linearized MPC regulating the nonlinear plant"
+      mpc:
+        N: 60
+        q_state_diag: [1.0, 0.1, 40.0, 4.0]
+        ru: 0.1
+        qu: 0.01
+        pgd_iters: 80
+    nonlinear_mpc_wind:
+      script: "experiments/inverted_pendulum/simulate_nonlinear_inverted_pendulum_mpc_wind.py"
+      t_final_seconds: 8.0
+      x0: [0.0, 0.0, 0.0, 0.0]
+      reference: [0.0, 0.0, 0.0, 0.0]
+      angle_stop_deg: 90.0
+      cart_stop: null
+      wind:
+        start_seconds: 1.0
+        duration_seconds: 2.0
+        peak_force: 2.0
+  rl_training:
+    script: "experiments/inverted_pendulum/train_rl_inverted_pendulum_numpy.py"
+    plant_id: "inverted_pendulum_linearized"
+    horizon_seconds: 8.0
+    horizon_steps: 400
+    cost:
+      q_state_diag: [1.0, 0.1, 40.0, 4.0]
+      ru: 2.0
+      qu: 0.01
+    early_stopping:
+      eval_every_updates: 100
+      patience_evals: 10
+      relative_improvement_threshold: 0.01
+      best_validation_loss_threshold: 1.0
+    pid_features:
+      seeds: 1
+      steps_cap: 100000
+      learning_rate: 0.003
+      input_dim: 5
+      runtime_features:
+        - "x_error"
+        - "x_dot_error"
+        - "theta_error"
+        - "theta_dot_error"
+        - "integral theta_error"
+    rich_mlp:
+      seeds: 5
+      steps_cap: 100000
+      learning_rate: 0.0005
+      input_dim: 6
+      hidden_layers: [16, 16]
+      activation: "tanh"
+      grad_clip_norm: 1.0
+      runtime_features:
+        - "x_error"
+        - "x_dot_error"
+        - "theta_error"
+        - "theta_dot_error"
+        - "integral theta_error"
+        - "u_prev"
+    rollout_mix:
+      nominal_regulation: 0.50
+      disturbance_rejection: 0.25
+      smaller_regulation: 0.25
+    validation_suite:
+      regulation_cases:
+        - { x: 0.0, x_dot: 0.0, theta_deg: 5.0, theta_dot: 0.0 }
+        - { x: 0.0, x_dot: 0.0, theta_deg: -5.0, theta_dot: 0.0 }
+        - { x: 0.12, x_dot: 0.0, theta_deg: 0.0, theta_dot: 0.0 }
+        - { x: -0.12, x_dot: 0.0, theta_deg: 0.0, theta_dot: 0.0 }
+        - { x: 0.10, x_dot: 0.0, theta_deg: 4.0, theta_dot: 0.0 }
+      disturbance_cases:
+        - { step_start_fraction: 0.30, amplitude: 0.5 }
+        - { step_start_fraction: 0.60, amplitude: -0.5 }
+
+frozen_outputs:
+  dissertation_context_file: "DISSERTATION_CONTEXT.md"
+  first_order_metrics_dir: "experiments/results/metrics/first_order_robustness"
+  first_order_figures_dir: "experiments/results/figures/first_order_robustness"
+  first_order_weights_dir: "experiments/results/rl_numpy/per_plant"
+  second_order_weights_dir: "experiments/results/rl_numpy/second_order_single/per_plant"
+  pendulum_weights_dir: "experiments/results/rl_numpy/inverted_pendulum_linearized/per_plant"

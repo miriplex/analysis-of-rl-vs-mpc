@@ -1,0 +1,11 @@
+scenario,controller,failure_count,failed_plants,failure_reasons,failure_details,late_escalation_plants
+input_noise_scale_0.1x,32_32 (rich11),1,unstable__rhp_zero,late_escalation,unstable__rhp_zero (tail_rms=0.3165>0.2 and tail_g=1.715>1.2),unstable__rhp_zero
+input_noise_scale_0.5x,32_32 (compact6),1,unstable__rhp_zero,"late_escalation,peak_error",unstable__rhp_zero (peak_error=1696>10; tail_rms=558.7>0.2 and tail_g=7.996>1.2),unstable__rhp_zero
+input_noise_scale_2x,16_16 (rich11),1,unstable__rhp_zero,"late_escalation,peak_error",unstable__rhp_zero (peak_error=28.15>10; tail_rms=9.728>0.2 and tail_g=5.22>1.2),unstable__rhp_zero
+input_noise_scale_3x,32_32_32 (rich11),1,unstable__rhp_zero,"late_escalation,peak_error",unstable__rhp_zero (peak_error=2.813e+06>10; tail_rms=9.25e+05>0.2 and tail_g=8.166>1.2),unstable__rhp_zero
+input_noise_scale_43x,MPC,1,unstable__no_zero,late_escalation,unstable__no_zero (tail_rms=0.2041>0.2 and tail_g=1.45>1.2),unstable__no_zero
+input_noise_scale_45x,RL (PID-features),1,unstable__no_zero,late_escalation,unstable__no_zero (tail_rms=0.203>0.2 and tail_g=1.507>1.2),unstable__no_zero
+nominal_screen,16_16 (compact6),1,unstable__rhp_zero,"late_escalation,peak_error",unstable__rhp_zero (peak_error=7.531e+05>10; tail_rms=2.477e+05>0.2 and tail_g=8.166>1.2),unstable__rhp_zero
+nominal_screen,16_16_16 (compact6),1,unstable__rhp_zero,"late_escalation,peak_error",unstable__rhp_zero (peak_error=4.444e+06>10; tail_rms=1.461e+06>0.2 and tail_g=8.166>1.2),unstable__rhp_zero
+nominal_screen,16_16_16 (rich11),1,unstable__rhp_zero,"late_escalation,peak_error",unstable__rhp_zero (peak_error=3.202e+06>10; tail_rms=1.053e+06>0.2 and tail_g=8.166>1.2),unstable__rhp_zero
+nominal_screen,32_32_32 (compact6),1,unstable__rhp_zero,"late_escalation,peak_error",unstable__rhp_zero (peak_error=4.105e+06>10; tail_rms=1.35e+06>0.2 and tail_g=8.166>1.2),unstable__rhp_zero
