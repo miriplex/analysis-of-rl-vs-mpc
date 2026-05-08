@@ -1,0 +1,11 @@
+controller,eligible_after_nominal,nominal_failure_count,nominal_failed_cases,max_pass_all_stress_scale,first_failure_stress_scale,failed_cases_at_first_failure,failure_reasons_at_first_failure,worst_final_state_norm_at_first_failure,last_tested_stress_scale,num_levels_tested
+rich11 16_16,True,0,,5.0,6.0,"x+0.00__theta+8.0,x-0.05__theta-8.0",final_rate_not_settled,0.6275403099905981,6.0,8
+state6 32_32_32,True,0,,4.0,5.0,"x-0.05__theta+3.0,x-0.05__theta+8.0","final_rate_not_settled,final_x_not_settled",0.5219366727134339,5.0,7
+history8 32_32_32,True,0,,4.0,5.0,"x+0.00__theta+3.0,x+0.00__theta+5.0,x-0.05__theta+3.0","final_rate_not_settled,final_x_not_settled",0.5235891607977742,5.0,7
+history8 32_32,True,0,,4.0,5.0,"x+0.00__theta+3.0,x+0.00__theta+5.0,x-0.05__theta+3.0","final_rate_not_settled,final_x_not_settled",0.5276883435609422,5.0,7
+history8 16_16,True,0,,4.0,5.0,"x+0.00__theta+3.0,x-0.05__theta+8.0",final_rate_not_settled,0.5287653004330599,5.0,7
+state6 32_32,True,0,,4.0,5.0,x-0.05__theta+8.0,final_rate_not_settled,0.5569565125931193,5.0,7
+rich11 32_32,True,0,,4.0,5.0,x-0.05__theta+8.0,final_rate_not_settled,0.5974177172677884,5.0,7
+state6 16_16,True,0,,4.0,5.0,x-0.05__theta+8.0,final_rate_not_settled,0.6222233063641907,5.0,7
+MPC,True,0,,3.0,4.0,x+0.05__theta+3.0,final_theta_not_settled,0.33559666000214944,4.0,6
+rich11 32_32_32,False,17,"x+0.00__theta+3.0,x+0.00__theta+8.0,x+0.00__theta-3.0,x+0.00__theta-5.0,x+0.00__theta-8.0,x+0.05__theta+3.0,x+0.05__theta+5.0,x+0.05__theta+8.0,x+0.05__theta-3.0,x+0.05__theta-5.0,x+0.05__theta-8.0,x-0.05__theta+3.0,x-0.05__theta+5.0,x-0.05__theta+8.0,x-0.05__theta-3.0,x-0.05__theta-5.0,x-0.05__theta-8.0",0.0,,,,0.0,0.0,0

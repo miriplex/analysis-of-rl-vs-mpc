@@ -1,0 +1,11 @@
+scenario,controller,failure_count,failed_plants,failure_reasons,failure_details,late_escalation_plants
+hidden_order_11,MPC,1,unstable__rhp_zero,"late_escalation,max_abs_u,peak_error",unstable__rhp_zero (peak_error=6.518e+04>10; max_abs_u=1.801e+06>50; tail_rms=2.468e+04>0.2 and tail_g=5.572>1.2),unstable__rhp_zero
+hidden_order_11,RL (PID-features),1,unstable__rhp_zero,peak_error,unstable__rhp_zero (peak_error=10.2>10),
+hidden_order_13,32_32_32 (rich11),1,unstable__rhp_zero,late_escalation,unstable__rhp_zero (tail_rms=0.9053>0.2 and tail_g=2.563>1.2),unstable__rhp_zero
+hidden_order_18,32_32 (rich11),1,unstable__rhp_zero,late_escalation,unstable__rhp_zero (tail_rms=2.945>0.2 and tail_g=1.963>1.2),unstable__rhp_zero
+hidden_order_9,16_16 (rich11),1,unstable__rhp_zero,late_escalation,unstable__rhp_zero (tail_rms=1.735>0.2 and tail_g=1.441>1.2),unstable__rhp_zero
+nominal_screen,16_16 (compact6),1,unstable__rhp_zero,"late_escalation,peak_error",unstable__rhp_zero (peak_error=34.93>10; tail_rms=16.34>0.2 and tail_g=2.823>1.2),unstable__rhp_zero
+nominal_screen,16_16_16 (compact6),1,unstable__rhp_zero,"late_escalation,peak_error",unstable__rhp_zero (peak_error=202.8>10; tail_rms=93.53>0.2 and tail_g=2.96>1.2),unstable__rhp_zero
+nominal_screen,16_16_16 (rich11),1,unstable__rhp_zero,"late_escalation,peak_error",unstable__rhp_zero (peak_error=146.7>10; tail_rms=67.84>0.2 and tail_g=2.93>1.2),unstable__rhp_zero
+nominal_screen,32_32 (compact6),1,unstable__rhp_zero,late_escalation,unstable__rhp_zero (tail_rms=0.2218>0.2 and tail_g=1.804>1.2),unstable__rhp_zero
+nominal_screen,32_32_32 (compact6),1,unstable__rhp_zero,"late_escalation,peak_error",unstable__rhp_zero (peak_error=186.7>10; tail_rms=85.9>0.2 and tail_g=2.982>1.2),unstable__rhp_zero

@@ -1,0 +1,11 @@
+controller,eligible_after_nominal,nominal_failure_count,nominal_failed_plants,max_pass_all_scale,first_failure_scale,failed_plants_at_first_failure,failure_reasons_at_first_failure,worst_tail_rms_at_first_failure,last_tested_scale,num_scales_tested
+MPC,True,0,,20.0,,,,0.0,20.0,39
+RL (PID-features),True,0,,20.0,,,,0.0,20.0,39
+32_32_32 (rich11),True,0,,1.0,1.1,unstable__rhp_zero,late_escalation,0.47841997323277075,1.1,12
+32_32 (compact6),True,0,,0.8,0.9,unstable__rhp_zero,late_escalation,0.626306243563977,0.9,10
+32_32 (rich11),True,0,,0.5,0.6,unstable__rhp_zero,late_escalation,0.5151204137989934,0.6,7
+16_16 (rich11),True,0,,0.3,0.4,unstable__rhp_zero,late_escalation,0.3422701063734485,0.4,5
+16_16 (compact6),False,1,unstable__rhp_zero,0.0,,,,0.0,0.0,0
+16_16_16 (compact6),False,1,unstable__rhp_zero,0.0,,,,0.0,0.0,0
+16_16_16 (rich11),False,1,unstable__rhp_zero,0.0,,,,0.0,0.0,0
+32_32_32 (compact6),False,1,unstable__rhp_zero,0.0,,,,0.0,0.0,0
