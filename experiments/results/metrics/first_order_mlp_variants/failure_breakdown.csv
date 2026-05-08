@@ -1,0 +1,19 @@
+scenario,controller,failure_count,failed_plants,failure_reasons,failure_details,late_escalation_plants
+disturbed,16_16 (compact6),1,unstable__rhp_zero,"late_escalation,peak_error",unstable__rhp_zero (peak_error=1.057e+06>10; tail_rms=3.477e+05>0.2 and tail_g=8.166>1.2),unstable__rhp_zero
+disturbed,16_16 (rich11),1,unstable__rhp_zero,"late_escalation,peak_error",unstable__rhp_zero (peak_error=9.372e+04>10; tail_rms=3.082e+04>0.2 and tail_g=8.165>1.2),unstable__rhp_zero
+disturbed,16_16_16 (compact6),1,unstable__rhp_zero,"late_escalation,peak_error",unstable__rhp_zero (peak_error=4.539e+06>10; tail_rms=1.493e+06>0.2 and tail_g=8.166>1.2),unstable__rhp_zero
+disturbed,16_16_16 (rich11),1,unstable__rhp_zero,"late_escalation,peak_error",unstable__rhp_zero (peak_error=2.318e+06>10; tail_rms=7.622e+05>0.2 and tail_g=8.166>1.2),unstable__rhp_zero
+disturbed,32_32 (compact6),1,unstable__rhp_zero,"late_escalation,peak_error",unstable__rhp_zero (peak_error=2.879e+05>10; tail_rms=9.467e+04>0.2 and tail_g=8.165>1.2),unstable__rhp_zero
+disturbed,32_32_32 (compact6),1,unstable__rhp_zero,"late_escalation,peak_error",unstable__rhp_zero (peak_error=5.235e+06>10; tail_rms=1.722e+06>0.2 and tail_g=8.166>1.2),unstable__rhp_zero
+disturbed,32_32_32 (rich11),1,unstable__rhp_zero,late_escalation,unstable__rhp_zero (tail_rms=1.369>0.2 and tail_g=1.405>1.2),unstable__rhp_zero
+hidden_pole,16_16 (compact6),1,unstable__rhp_zero,"late_escalation,peak_error",unstable__rhp_zero (peak_error=1.52e+07>10; tail_rms=4.999e+06>0.2 and tail_g=8.166>1.2),unstable__rhp_zero
+hidden_pole,16_16 (rich11),1,unstable__rhp_zero,"late_escalation,peak_error",unstable__rhp_zero (peak_error=1.56e+06>10; tail_rms=5.13e+05>0.2 and tail_g=8.166>1.2),unstable__rhp_zero
+hidden_pole,16_16_16 (compact6),2,"unstable__no_zero,unstable__rhp_zero","late_escalation,peak_error",unstable__no_zero (peak_error=1.846e+06>10; tail_rms=6.071e+05>0.2 and tail_g=8.166>1.2); unstable__rhp_zero (peak_error=1.375e+07>10; tail_rms=4.523e+06>0.2 and tail_g=8.166>1.2),"unstable__no_zero,unstable__rhp_zero"
+hidden_pole,16_16_16 (rich11),1,unstable__rhp_zero,"late_escalation,peak_error",unstable__rhp_zero (peak_error=1.428e+07>10; tail_rms=4.697e+06>0.2 and tail_g=8.166>1.2),unstable__rhp_zero
+hidden_pole,32_32 (compact6),1,unstable__rhp_zero,late_escalation,unstable__rhp_zero (tail_rms=0.5623>0.2 and tail_g=2.053>1.2),unstable__rhp_zero
+hidden_pole,32_32 (rich11),1,unstable__rhp_zero,late_escalation,unstable__rhp_zero (tail_rms=0.3109>0.2 and tail_g=1.354>1.2),unstable__rhp_zero
+hidden_pole,32_32_32 (compact6),1,unstable__rhp_zero,"late_escalation,peak_error",unstable__rhp_zero (peak_error=1.899e+07>10; tail_rms=6.246e+06>0.2 and tail_g=8.166>1.2),unstable__rhp_zero
+nominal,16_16 (compact6),1,unstable__rhp_zero,"late_escalation,peak_error",unstable__rhp_zero (peak_error=7.531e+05>10; tail_rms=2.477e+05>0.2 and tail_g=8.166>1.2),unstable__rhp_zero
+nominal,16_16_16 (compact6),1,unstable__rhp_zero,"late_escalation,peak_error",unstable__rhp_zero (peak_error=4.444e+06>10; tail_rms=1.461e+06>0.2 and tail_g=8.166>1.2),unstable__rhp_zero
+nominal,16_16_16 (rich11),1,unstable__rhp_zero,"late_escalation,peak_error",unstable__rhp_zero (peak_error=3.202e+06>10; tail_rms=1.053e+06>0.2 and tail_g=8.166>1.2),unstable__rhp_zero
+nominal,32_32_32 (compact6),1,unstable__rhp_zero,"late_escalation,peak_error",unstable__rhp_zero (peak_error=4.105e+06>10; tail_rms=1.35e+06>0.2 and tail_g=8.166>1.2),unstable__rhp_zero

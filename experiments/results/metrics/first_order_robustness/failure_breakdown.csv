@@ -1,0 +1,18 @@
+scenario,controller,failure_count,failed_plants,failure_reasons,failure_details,late_escalation_plants
+disturbed,16_16 (compact6),1,unstable__rhp_zero,"late_escalation,peak_error",unstable__rhp_zero (peak_error=43.54>10; tail_rms=20.26>0.2 and tail_g=2.829>1.2),unstable__rhp_zero
+disturbed,16_16 (rich11),2,"integrator__rhp_zero,unstable__rhp_zero",late_escalation,integrator__rhp_zero (tail_rms=0.2934>0.2 and tail_g=1.211>1.2); unstable__rhp_zero (tail_rms=2.503>0.2 and tail_g=1.898>1.2),"integrator__rhp_zero,unstable__rhp_zero"
+disturbed,16_16_16 (compact6),1,unstable__rhp_zero,"late_escalation,peak_error",unstable__rhp_zero (peak_error=238.1>10; tail_rms=109.7>0.2 and tail_g=2.974>1.2),unstable__rhp_zero
+disturbed,16_16_16 (rich11),1,unstable__rhp_zero,"late_escalation,peak_error",unstable__rhp_zero (peak_error=174.3>10; tail_rms=80.46>0.2 and tail_g=2.951>1.2),unstable__rhp_zero
+disturbed,32_32 (compact6),1,unstable__rhp_zero,late_escalation,unstable__rhp_zero (tail_rms=1.842>0.2 and tail_g=1.492>1.2),unstable__rhp_zero
+disturbed,32_32_32 (compact6),1,unstable__rhp_zero,"late_escalation,peak_error",unstable__rhp_zero (peak_error=255.9>10; tail_rms=117.6>0.2 and tail_g=2.994>1.2),unstable__rhp_zero
+hidden_pole,16_16 (compact6),1,unstable__rhp_zero,"late_escalation,peak_error",unstable__rhp_zero (peak_error=690.8>10; tail_rms=317.6>0.2 and tail_g=2.995>1.2),unstable__rhp_zero
+hidden_pole,16_16 (rich11),1,unstable__rhp_zero,"late_escalation,peak_error",unstable__rhp_zero (peak_error=72.23>10; tail_rms=33.76>0.2 and tail_g=2.828>1.2),unstable__rhp_zero
+hidden_pole,16_16_16 (compact6),2,"unstable__no_zero,unstable__rhp_zero","late_escalation,peak_error",unstable__no_zero (peak_error=83.14>10; tail_rms=38>0.2 and tail_g=3.052>1.2); unstable__rhp_zero (peak_error=625.4>10; tail_rms=287.6>0.2 and tail_g=2.99>1.2),"unstable__no_zero,unstable__rhp_zero"
+hidden_pole,16_16_16 (rich11),1,unstable__rhp_zero,"late_escalation,peak_error",unstable__rhp_zero (peak_error=649.7>10; tail_rms=298.9>0.2 and tail_g=2.987>1.2),unstable__rhp_zero
+hidden_pole,32_32 (compact6),1,unstable__rhp_zero,late_escalation,unstable__rhp_zero (tail_rms=0.9582>0.2 and tail_g=4.157>1.2),unstable__rhp_zero
+hidden_pole,32_32_32 (compact6),1,unstable__rhp_zero,"late_escalation,peak_error",unstable__rhp_zero (peak_error=862.5>10; tail_rms=396.3>0.2 and tail_g=3.001>1.2),unstable__rhp_zero
+nominal,16_16 (compact6),1,unstable__rhp_zero,"late_escalation,peak_error",unstable__rhp_zero (peak_error=34.93>10; tail_rms=16.34>0.2 and tail_g=2.823>1.2),unstable__rhp_zero
+nominal,16_16_16 (compact6),1,unstable__rhp_zero,"late_escalation,peak_error",unstable__rhp_zero (peak_error=202.8>10; tail_rms=93.53>0.2 and tail_g=2.96>1.2),unstable__rhp_zero
+nominal,16_16_16 (rich11),1,unstable__rhp_zero,"late_escalation,peak_error",unstable__rhp_zero (peak_error=146.7>10; tail_rms=67.84>0.2 and tail_g=2.93>1.2),unstable__rhp_zero
+nominal,32_32 (compact6),1,unstable__rhp_zero,late_escalation,unstable__rhp_zero (tail_rms=0.2218>0.2 and tail_g=1.804>1.2),unstable__rhp_zero
+nominal,32_32_32 (compact6),1,unstable__rhp_zero,"late_escalation,peak_error",unstable__rhp_zero (peak_error=186.7>10; tail_rms=85.9>0.2 and tail_g=2.982>1.2),unstable__rhp_zero
